@@ -20,12 +20,17 @@ connectDB();
 // Middleware
 
 
+
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      "http://localhost:5173",
+      "https://diagnostic-frontend-zyv2.vercel.app",
+    ],
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 
