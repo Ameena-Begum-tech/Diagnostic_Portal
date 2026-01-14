@@ -17,21 +17,36 @@ const app = express();
 // Connect Database
 connectDB();
 
-// Middleware
+// ✅ ALLOWED ORIGINS (IMPORTANT)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://diagnostic-frontend-zyv2.vercel.app",
+  "https://diagnostic-frontend-zyv2-7u3g5cwl4-ameenas-projects-132ac159.vercel.app"
+];
 
-
-
+// ✅ CORS CONFIG (FIXED)
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://diagnostic-frontend-zyv2.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      // Allow Postman / server-to-server
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// ✅ HANDLE PREFLIGHT REQUESTS (CRITICAL)
+app.options("*", cors());
 
+// Middleware
 app.use(express.json());
 
 // Routes
